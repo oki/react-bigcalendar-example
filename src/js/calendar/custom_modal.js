@@ -43,8 +43,6 @@ class CustomModal extends React.Component {
         })
         .then(response => {
           let data = JSON.parse(response.text)
-          console.log("After post");
-          console.log(data);
           this.cleanAndClose();
       });
     } else {
@@ -58,8 +56,6 @@ class CustomModal extends React.Component {
         })
         .then(response => {
           let data = JSON.parse(response.text)
-          console.log("After post");
-          console.log(data);
           this.cleanAndClose();
       });
     }
@@ -74,8 +70,6 @@ class CustomModal extends React.Component {
       .query({ authenticity_token })
       .then(response => {
         let data = JSON.parse(response.text)
-        console.log("After post");
-        console.log(data);
         this.cleanAndClose();
     });
 
@@ -83,8 +77,6 @@ class CustomModal extends React.Component {
   }
 
   handleError(error) {
-    console.log(error);
-
     this.setState({
       errors: {
         [error.field]: error.code
@@ -94,7 +86,6 @@ class CustomModal extends React.Component {
   }
 
   cleanAndClose() {
-
     this.setState({
       errors: []
     });
@@ -103,9 +94,6 @@ class CustomModal extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("nextProps");
-    console.log(nextProps);
-
     this.setState({
       start: moment(nextProps.modal.start).format("YYYY-MM-DD"),
       end: moment(nextProps.modal.end).format("YYYY-MM-DD"),
@@ -115,15 +103,9 @@ class CustomModal extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    console.log("Component will unmount!")
-  }
-
   render() {
-    console.log("Rendering CustomModal...")
+    console.log("[!] Rendering CustomModal")
     const { modal, onClose, drivers } = this.props;
-
-    console.log(this.state);
 
     return([
       <Modal open={modal.open} onClose={this.cleanAndClose} little>

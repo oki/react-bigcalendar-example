@@ -55,8 +55,6 @@ class App extends React.Component {
   }
 
   loadEvents(date, driver_ids) {
-    console.log(`loadEvents called!: ${date} and ${driver_ids}`);
-
     request
       .get('/user/web_api/absences.json')
       .query({ date: date })
