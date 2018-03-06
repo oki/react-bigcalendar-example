@@ -12,6 +12,31 @@ import AbsenceCalendar from './calendar/absence_calendar'
 moment.tz.setDefault("Europe/Warsaw");
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment))
 
+class Spinner extends React.Component {
+  render() {
+    return(
+      this.props.loading ? <div style={{top: "-50%" }} align="center" className="cssload-fond">
+        <div className="cssload-container-general">
+          <div className="cssload-internal">
+            <div className="cssload-ballcolor cssload-ball_1">
+            </div>
+          </div>
+          <div className="cssload-internal">
+            <div className="cssload-ballcolor cssload-ball_2"></div>
+          </div>
+          <div className="cssload-internal">
+            <div className="cssload-ballcolor cssload-ball_3"></div>
+          </div>
+          <div className="cssload-internal">
+            <div className="cssload-ballcolor cssload-ball_4"></div>
+          </div>
+        </div>
+      </div>
+    : null
+    );
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +50,7 @@ class App extends React.Component {
       driver_ids: this.restoreField("driver_ids", ""),
       month: this.restoreField("month", () => moment(date).format("M")),
       year: this.restoreField("year", () => moment(date).format("YYYY")),
+      loading: false
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -35,11 +61,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.loadEvents(this.selectedDate().format("YYYY-MM-01"), this.state.driver_ids);
+    this.setState({loading: true }, () => {
+      this.loadEvents(this.selectedDate().format("YYYY-MM-01"), this.state.driver_ids);
+    });
   }
 
   handleChange(event) {
-    this.setState({[event.target.name]: event.target.value }, () => {
+    this.setState({[event.target.name]: event.target.value, loading: true }, () => {
       this.reloadApp()
     });
 
@@ -51,7 +79,7 @@ class App extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextState.events != this.state.events;
+    return nextState.loading || nextState.events != this.state.events;
   }
 
   loadEvents(date, driver_ids) {
@@ -63,6 +91,7 @@ class App extends React.Component {
         let data = JSON.parse(response.text)
 
         this.setState({
+          loading: false,
           events: data.absences.map( (event) => {
             event.start = moment(event.start).tz("Europe/Warsaw").format('YYYY-MM-DD')
             event.end = moment(event.end).tz("Europe/Warsaw").format('YYYY-MM-DD')
@@ -100,7 +129,7 @@ class App extends React.Component {
   }
 
   render() {
-    return (
+    return ([
       <AbsenceCalendar
         events={this.state.events}
 
@@ -116,8 +145,9 @@ class App extends React.Component {
         selected_year={this.state.year}
 
         selected_date={this.selectedDate().toDate()}
-      />
-    )
+      />,
+      <Spinner loading={this.state.loading} />
+    ])
   }
 }
 
