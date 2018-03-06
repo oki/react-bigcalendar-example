@@ -124,8 +124,6 @@ class CustomModal extends React.Component {
               includeBlank={false}
             />
 
-
-
             <span style={{"paddingLeft": "10px"}}>
               <SelectFilter
                 label="Typ"
@@ -157,6 +155,13 @@ class CustomModal extends React.Component {
               <br />
               <input name="end" type="text" value={this.state.end} onChange={this.handleChange} autoComplete="off" />
             </label>
+
+            {this.state.errors.end && <small className="text-danger">
+              <br />
+              {this.state.errors.end}
+              </small>
+            }
+
           </div>
 
           <div className="form-group">
